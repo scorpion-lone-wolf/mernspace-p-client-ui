@@ -1,3 +1,4 @@
+import Header from "@/components/custom/Header";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
@@ -13,7 +14,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={cn("h-full", "antialiased", "font-manrope", manrope.variable)}>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Header />
+        <main>{children}</main>
+      </body>
     </html>
   );
 }
