@@ -18,7 +18,7 @@ const items = [
 function Header() {
   return (
     <header className="bg-white">
-      <nav className="container py-5 mx-auto w-1/2 flex justify-between items-center">
+      <nav className="mx-auto flex w-full max-w-[1280px] items-center justify-between px-4 py-4 sm:px-6 xl:px-12">
         <div className="flex gap-1 items-center">
           <svg
             data-testid="logo"
@@ -65,7 +65,7 @@ function Header() {
           <div className="relative">
             <Link className="hover:text-primary relative" href="/">
               <ShoppingBasket />
-              <span className="absolute -top-4 -right-4 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-white">
+              <span className="absolute -top-3 -right-3 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-white">
                 4
               </span>
             </Link>
