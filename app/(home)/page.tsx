@@ -71,7 +71,7 @@ export default function Home() {
               Get your pizza now
             </Button>
           </div>
-          <div className="animate-[spin_5s_linear_infinite]">
+          <div className="animate-[spin_5s_linear_infinite] flex justify-center items-center">
             <Image src="/pizza-main.png" width={350} height={350} alt="hero-main-pizza" />
           </div>
         </div>
