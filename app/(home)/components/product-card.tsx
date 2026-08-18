@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Image from "next/image";
+import ToppingList from "./topping-list";
 
 export type Product = {
   _id: string;
@@ -33,7 +34,7 @@ const ProductCard = ({ product }: PropTypes) => {
           <DialogTrigger className="bg-orange-200 hover:bg-orange-300 text-orange-500 px-6 py-2 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150">
             Choose
           </DialogTrigger>
-          <DialogContent className="!max-w-4xl overflow-hidden p-0">
+          <DialogContent className="!max-w-2xl overflow-hidden p-0">
             <div className="flex flex-col md:flex-row">
               <div className="flex min-h-64 w-full shrink-0 items-center justify-center bg-white p-8 md:min-h-[28rem] md:w-[36%]">
                 <Image
@@ -49,8 +50,8 @@ const ProductCard = ({ product }: PropTypes) => {
                 <p className="mt-1">{product.description}</p>
 
                 <div>
-                  <h4 className="mt-8 text-lg">Choose the size</h4>
-                  <RadioGroup defaultValue="small" className="grid grid-cols-3 gap-4 mt-1">
+                  <h4 className="mt-4 text-lg">Choose the size</h4>
+                  <RadioGroup defaultValue="small" className="grid grid-cols-3 gap-4">
                     <div>
                       <RadioGroupItem
                         value="small"
@@ -99,8 +100,8 @@ const ProductCard = ({ product }: PropTypes) => {
                 </div>
 
                 <div>
-                  <h4 className="mt-4 text-lg">Choose the crust</h4>
-                  <RadioGroup defaultValue="thin" className="mt-1 grid max-w-md grid-cols-2 gap-4">
+                  <h4 className="mt-2 text-lg">Choose the crust</h4>
+                  <RadioGroup defaultValue="thin" className="grid grid-cols-3 gap-4">
                     <div>
                       <RadioGroupItem
                         value="thin"
@@ -132,6 +133,8 @@ const ProductCard = ({ product }: PropTypes) => {
                     </div>
                   </RadioGroup>
                 </div>
+
+                <ToppingList />
               </div>
             </div>
           </DialogContent>

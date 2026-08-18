@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
-import ProductCard from "./components/ProductCard";
+import ProductCard from "./components/product-card";
 
 export default function Home() {
   const products = [
