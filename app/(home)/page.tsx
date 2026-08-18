@@ -8,9 +8,9 @@ export default function Home() {
     {
       _id: "123",
       name: "Pizza1",
-      description: "description",
+      description: "cheesy delicious pizza",
       image: "/pizza-main.png",
-      price: 100,
+      price: 500,
     },
     {
       _id: "2",
