@@ -1,21 +1,17 @@
 import { Phone, ShoppingBasket } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import SelectBox from "./select-box";
 
-const items = [
-  { label: "Cheesy Delight", value: "Cheesy Delight" },
-  { label: "Pizza Hut", value: "Pizza Hut" },
-  { label: "Kids Corner", value: "Kids Corner" },
-];
-function Header() {
+async function Header() {
+  const tenants = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/tenants?limit=100`, {
+    next: {
+      revalidate: 60 * 60, // 1 hour cache
+    },
+  });
+  if (!tenants.ok) throw new Error("Failed to fetch tenants");
+  const resturants = await tenants.json();
+
   return (
     <header className="bg-white">
       <nav className="mx-auto flex w-full max-w-[1280px] items-center justify-between px-4 py-4 sm:px-6 xl:px-12">
@@ -34,20 +30,7 @@ function Header() {
               fill="#484848"
             />
           </svg>
-          <Select items={items}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Resturants" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {items.map(item => (
-                  <SelectItem key={item.value} value={item.value}>
-                    {item.label}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <SelectBox resturants={resturants.data} />
         </div>
         <div className="flex justify-center gap-4">
           <ul className="flex space-x-1.5 capitalize">
