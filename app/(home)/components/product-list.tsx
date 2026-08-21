@@ -51,7 +51,7 @@ async function ProductList() {
                   {products
                     .filter(product => product.categoryId === category._id)
                     .map(product => (
-                      <ProductCard key={product._id} product={product} />
+                      <ProductCard key={product._id} product={product} category={category} />
                     ))}
                 </div>
               )}
