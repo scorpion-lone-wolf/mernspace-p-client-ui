@@ -1,39 +1,30 @@
-"use client";
-import { useState } from "react";
-import ToppingCard, { Topping } from "./topping-card";
+import { Topping } from "@/lib/types";
+import { useEffect, useState } from "react";
+import ToppingCard from "./topping-card";
 
-const toppings = [
-  {
-    _id: "1",
-    name: "Chicken",
-    image: "/chicken.png",
-    price: 50,
-    isAvailable: true,
-  },
-  {
-    _id: "2",
-    name: "Jelapeno",
-    image: "/jelapeno.png",
-    price: 50,
-    isAvailable: true,
-  },
-  {
-    _id: "3",
-    name: "Cheese",
-    image: "/cheese.png",
-    price: 50,
-    isAvailable: true,
-  },
-];
 function ToppingList() {
-  const [selectedToppings, setSelectedToppings] = useState([toppings[0]]);
+  const [toppings, setToppings] = useState<Topping[]>([]);
+
+  useEffect(() => {
+    const fetchToppings = async () => {
+      // TODO: Add dynamic tenantId
+      const toppingResponse = await fetch(`
+          ${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=06c08096-664a-4ca8-b97c-ae8b4a0f3fad&limit=100`);
+      const toppings = (await toppingResponse.json()).data;
+      setToppings(toppings);
+    };
+    fetchToppings();
+  }, []);
+
+  const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
+
   const handleToppingCheckbox = (topping: Topping) => {
-    if (selectedToppings.some(selectedTopping => selectedTopping._id === topping._id)) {
+    if (selectedToppings.some((selectedTopping: Topping) => selectedTopping._id === topping._id)) {
       setSelectedToppings(
-        selectedToppings.filter(selectedTopping => selectedTopping._id !== topping._id)
+        selectedToppings.filter((selectedTopping: Topping) => selectedTopping._id !== topping._id)
       );
     } else {
-      setSelectedToppings([...selectedToppings, topping]);
+      setSelectedToppings((prev: Topping[]) => [...prev, topping]);
     }
   };
 
@@ -41,16 +32,17 @@ function ToppingList() {
     <section>
       <h4 className="mt-4 text-lg">Extra Toppings</h4>
       <div className="grid grid-cols-3 gap-4 mt-4">
-        {toppings.map(topping => {
-          return (
-            <ToppingCard
-              key={topping._id}
-              topping={topping}
-              selectedToppings={selectedToppings}
-              handleToppingCheckbox={handleToppingCheckbox}
-            />
-          );
-        })}
+        {toppings &&
+          toppings.map(topping => {
+            return (
+              <ToppingCard
+                key={topping._id}
+                topping={topping}
+                selectedToppings={selectedToppings}
+                handleToppingCheckbox={handleToppingCheckbox}
+              />
+            );
+          })}
       </div>
     </section>
   );

@@ -42,3 +42,11 @@ export type ProductPriceConfiguration = {
     availableOptions: Record<string, number>;
   };
 };
+
+export type Topping = {
+  _id: string;
+  name: string;
+  image: string;
+  price: number;
+  isPublished: boolean;
+};

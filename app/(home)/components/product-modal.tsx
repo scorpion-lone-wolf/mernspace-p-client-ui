@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -12,6 +13,9 @@ type ProductProps = {
   category: Category;
 };
 function ProductModal({ product, category }: ProductProps) {
+  const handleAddToCart = () => {
+    console.log("handleAddToCart");
+  };
   const categoryData = category._id === product.categoryId ? category : null;
   return (
     <Dialog>
@@ -27,6 +31,7 @@ function ProductModal({ product, category }: ProductProps) {
               height={280}
               className="h-auto w-full max-w-64 object-contain"
               alt={product.name}
+              unoptimized
             />
           </div>
           <div className="min-w-0 flex-1 p-8 md:p-10">
@@ -67,7 +72,7 @@ function ProductModal({ product, category }: ProductProps) {
 
             <div className="flex items-center justify-between mt-8">
               <span className="font-bold">₹ 400</span>
-              <Button className="bg-primary text-white h-10">
+              <Button onClick={handleAddToCart} className="bg-primary text-white h-10">
                 <ShoppingCart className="mr-2" />
                 <p>Add to Cart</p>
               </Button>

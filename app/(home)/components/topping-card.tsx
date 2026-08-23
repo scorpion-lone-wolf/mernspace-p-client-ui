@@ -1,13 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { Topping } from "@/lib/types";
 import { CircleCheck } from "lucide-react";
 import Image from "next/image";
-export type Topping = {
-  _id: string;
-  name: string;
-  image: string;
-  price: number;
-  isAvailable: boolean;
-};
+
 type PropType = {
   topping: Topping;
   selectedToppings: Topping[];
@@ -26,7 +21,7 @@ function ToppingCard({ topping, selectedToppings, handleToppingCheckbox }: PropT
       variant={"outline"}
       className={`relative flex flex-col h-34 ${isCurrentSelected ? "border-orange-400 border-2" : ""}`}
     >
-      <Image src={topping.image} alt={topping.name} width={50} height={50} />
+      <Image src={topping.image} alt={topping.name} width={50} height={50} unoptimized />
       <h4>{topping.name}</h4>
       <p>₹{topping.price}</p>
       {isCurrentSelected && (
