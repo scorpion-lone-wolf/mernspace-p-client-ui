@@ -21,7 +21,14 @@ function ToppingCard({ topping, selectedToppings, handleToppingCheckbox }: PropT
       variant={"outline"}
       className={`relative flex flex-col h-34 ${isCurrentSelected ? "border-orange-400 border-2" : ""}`}
     >
-      <Image src={topping.image} alt={topping.name} width={50} height={50} unoptimized />
+      <Image
+        src={topping.image}
+        alt={topping.name}
+        width={50}
+        height={50}
+        unoptimized
+        style={{ width: "100%", height: "auto" }}
+      />
       <h4>{topping.name}</h4>
       <p>₹{topping.price}</p>
       {isCurrentSelected && (

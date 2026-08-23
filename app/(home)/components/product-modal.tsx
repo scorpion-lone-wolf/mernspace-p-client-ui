@@ -67,9 +67,7 @@ function ProductModal({ product, category }: ProductProps) {
                   </RadioGroup>
                 </div>
               ))}
-
             <ToppingList />
-
             <div className="flex items-center justify-between mt-8">
               <span className="font-bold">₹ 400</span>
               <Button onClick={handleAddToCart} className="bg-primary text-white h-10">

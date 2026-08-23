@@ -1,6 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Category, Product } from "@/lib/types";
 import Image from "next/image";
+import { Suspense } from "react";
 import ProductModal from "./product-modal";
 
 // export type Product = {
@@ -29,8 +30,9 @@ const ProductCard = ({ product, category }: PropTypes) => {
            */}
           <span className="font-bold">₹{500}</span>
         </p>
-
-        <ProductModal product={product} category={category} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <ProductModal product={product} category={category} />
+        </Suspense>
       </CardFooter>
     </Card>
   );
