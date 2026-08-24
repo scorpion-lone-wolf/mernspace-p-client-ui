@@ -5,7 +5,7 @@ import { ShoppingBasket } from "lucide-react";
 import Link from "next/link";
 
 function CartCounter() {
-  const count = useAppSelector((state: RootState) => state.cart.value);
+  const count = useAppSelector((state: RootState) => state.cart.cartItems.length);
   return (
     <div className="relative">
       <Link className="hover:text-primary relative" href="/">
