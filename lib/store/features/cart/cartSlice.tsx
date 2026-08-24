@@ -9,7 +9,7 @@ type CartItem = {
     };
     selectedToppings: Topping[];
   };
-  quantity: number;
+  // quantity: number;
 };
 
 export interface CartState {
@@ -25,25 +25,7 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      // In our cart is that product already exists
-      // If so just increase the quantity
-      if (
-        state.cartItems.some(
-          (cartItem: CartItem) => cartItem.product._id === action.payload.product._id
-        )
-      )
-        return {
-          cartItems: state.cartItems.map((cartItem: CartItem) => {
-            if (cartItem.product._id === action.payload.product._id) {
-              return {
-                product: action.payload.product,
-                choosenConfiguration: action.payload.choosenConfiguration,
-                quantity: cartItem.quantity + 1,
-              };
-            }
-            return cartItem;
-          }),
-        };
+      // TODO: Add quantity
 
       return {
         cartItems: [
@@ -51,7 +33,6 @@ export const cartSlice = createSlice({
           {
             product: action.payload.product,
             choosenConfiguration: action.payload.choosenConfiguration,
-            quantity: 1,
           },
         ],
       };
