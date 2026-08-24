@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { increment } from "@/lib/store/features/cart/cartSlice";
+import { useAppDispatch } from "@/lib/store/hooks";
 import { Category, Product } from "@/lib/types";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
+import React from "react";
 import ToppingList from "./topping-list";
 
 type ProductProps = {
@@ -13,13 +16,20 @@ type ProductProps = {
   category: Category;
 };
 function ProductModal({ product, category }: ProductProps) {
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const dispatch = useAppDispatch();
   const handleAddToCart = () => {
+    dispatch(increment());
     console.log("handleAddToCart");
+    setDialogOpen(false);
   };
   const categoryData = category._id === product.categoryId ? category : null;
   return (
-    <Dialog>
-      <DialogTrigger className="bg-orange-200 hover:bg-orange-300 text-orange-500 px-6 py-2 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150">
+    <Dialog open={dialogOpen}>
+      <DialogTrigger
+        onClick={() => setDialogOpen(true)}
+        className="bg-orange-200 hover:bg-orange-300 text-orange-500 px-6 py-2 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+      >
         Choose
       </DialogTrigger>
       <DialogContent className="!max-w-2xl overflow-hidden p-0">

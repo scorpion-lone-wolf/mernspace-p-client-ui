@@ -1,6 +1,7 @@
-import { Phone, ShoppingBasket } from "lucide-react";
+import { Phone } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import CartCounter from "./cart-counter";
 import SelectBox from "./select-box";
 
 async function Header() {
@@ -45,14 +46,7 @@ async function Header() {
               </Link>
             </li>
           </ul>
-          <div className="relative">
-            <Link className="hover:text-primary relative" href="/">
-              <ShoppingBasket />
-              <span className="absolute -top-3 -right-3 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-white">
-                4
-              </span>
-            </Link>
-          </div>
+          <CartCounter />
           <div className="flex justify-center ml-5 gap-1">
             <Phone />
             <span>+91 123456789</span>
