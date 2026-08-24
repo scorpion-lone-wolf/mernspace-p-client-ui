@@ -1,30 +1,49 @@
+import { Product, Topping } from "@/lib/types";
 import { createSlice } from "@reduxjs/toolkit";
 
+type CartItem = {
+  product: Product;
+  choosenConfiguration: {
+    priceConfiguration: {
+      [key: string]: string;
+    };
+    selectedToppings: Topping[];
+  };
+  // quantity: number;
+};
+
 export interface CartState {
-  value: number;
+  cartItems: CartItem[];
 }
 
 const initialState: CartState = {
-  value: 0,
+  cartItems: [],
 };
 
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    increment: state => {
-      state.value += 1;
-    },
-    decrement: state => {
-      state.value -= 1;
+    addToCart: (state, action) => {
+      return {
+        cartItems: [
+          ...state.cartItems,
+          {
+            product: action.payload.product,
+            choosenConfiguration: action.payload.choosenConfiguration,
+          },
+        ],
+      };
     },
     clearCart: state => {
-      state.value = 0;
+      return {
+        cartItems: [],
+      };
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { increment, decrement, clearCart } = cartSlice.actions;
+export const { addToCart, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

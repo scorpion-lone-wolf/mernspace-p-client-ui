@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { increment } from "@/lib/store/features/cart/cartSlice";
+
+import { addToCart } from "@/lib/store/features/cart/cartSlice";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { Category, Product, Topping } from "@/lib/types";
 import { ShoppingCart } from "lucide-react";
@@ -20,8 +21,17 @@ type ChoosenConfig = {
   [key: string]: string;
 };
 function ProductModal({ product, category }: ProductProps) {
+  const categoryData = category._id === product.categoryId ? category : null;
+
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [choosenConfig, setChoosenConfig] = React.useState<ChoosenConfig>({});
+  const defaultConfig =
+    categoryData &&
+    Object.entries(categoryData.priceConfiguration)
+      .map(([key, value]) => {
+        return { [key]: value.availableOptions[0] };
+      })
+      .reduce((acc, config) => ({ ...acc, ...config }), {});
+  const [choosenConfig, setChoosenConfig] = React.useState<ChoosenConfig>(defaultConfig!);
   const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
   const dispatch = useAppDispatch();
 
@@ -36,9 +46,16 @@ function ProductModal({ product, category }: ProductProps) {
   };
 
   const handleAddToCart = () => {
-    dispatch(increment());
+    const itemToAdd = {
+      product,
+      choosenConfiguration: {
+        priceConfiguration: choosenConfig,
+        selectedToppings,
+      },
+    };
+    dispatch(addToCart(itemToAdd));
     console.log("handleAddToCart");
-    setDialogOpen(false);
+    // setDialogOpen(false);
   };
 
   const handleRadioChange = (key: string, data: string) => {
@@ -50,7 +67,6 @@ function ProductModal({ product, category }: ProductProps) {
     });
   };
   console.log("choosen config", choosenConfig);
-  const categoryData = category._id === product.categoryId ? category : null;
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger
