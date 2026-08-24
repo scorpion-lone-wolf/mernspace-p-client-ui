@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { increment } from "@/lib/store/features/cart/cartSlice";
 import { useAppDispatch } from "@/lib/store/hooks";
-import { Category, Product } from "@/lib/types";
+import { Category, Product, Topping } from "@/lib/types";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import React from "react";
@@ -22,7 +22,19 @@ type ChoosenConfig = {
 function ProductModal({ product, category }: ProductProps) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [choosenConfig, setChoosenConfig] = React.useState<ChoosenConfig>({});
+  const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
   const dispatch = useAppDispatch();
+
+  const handleToppingCheckbox = (topping: Topping) => {
+    if (selectedToppings.some((selectedTopping: Topping) => selectedTopping._id === topping._id)) {
+      setSelectedToppings(
+        selectedToppings.filter((selectedTopping: Topping) => selectedTopping._id !== topping._id)
+      );
+    } else {
+      setSelectedToppings((prev: Topping[]) => [...prev, topping]);
+    }
+  };
+
   const handleAddToCart = () => {
     dispatch(increment());
     console.log("handleAddToCart");
@@ -95,7 +107,10 @@ function ProductModal({ product, category }: ProductProps) {
                   </RadioGroup>
                 </div>
               ))}
-            <ToppingList />
+            <ToppingList
+              handleToppingCheckbox={handleToppingCheckbox}
+              selectedToppings={selectedToppings}
+            />
             <div className="flex items-center justify-between mt-8">
               <span className="font-bold">₹ 400</span>
               <Button onClick={handleAddToCart} className="bg-primary text-white h-10">

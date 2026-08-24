@@ -2,7 +2,13 @@ import { Topping } from "@/lib/types";
 import { useEffect, useState } from "react";
 import ToppingCard from "./topping-card";
 
-function ToppingList() {
+type ToppingListProps = {
+  handleToppingCheckbox: (topping: Topping) => void;
+  selectedToppings: Topping[];
+};
+
+function ToppingList({ handleToppingCheckbox, selectedToppings }: ToppingListProps) {
+  // this is for showing what toppings are available
   const [toppings, setToppings] = useState<Topping[]>([]);
 
   useEffect(() => {
@@ -15,18 +21,6 @@ function ToppingList() {
     };
     fetchToppings();
   }, []);
-
-  const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
-
-  const handleToppingCheckbox = (topping: Topping) => {
-    if (selectedToppings.some((selectedTopping: Topping) => selectedTopping._id === topping._id)) {
-      setSelectedToppings(
-        selectedToppings.filter((selectedTopping: Topping) => selectedTopping._id !== topping._id)
-      );
-    } else {
-      setSelectedToppings((prev: Topping[]) => [...prev, topping]);
-    }
-  };
 
   return (
     <section>
