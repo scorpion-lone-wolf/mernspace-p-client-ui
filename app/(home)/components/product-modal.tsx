@@ -15,17 +15,32 @@ type ProductProps = {
   product: Product;
   category: Category;
 };
+
+type ChoosenConfig = {
+  [key: string]: string;
+};
 function ProductModal({ product, category }: ProductProps) {
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [choosenConfig, setChoosenConfig] = React.useState<ChoosenConfig>({});
   const dispatch = useAppDispatch();
   const handleAddToCart = () => {
     dispatch(increment());
     console.log("handleAddToCart");
     setDialogOpen(false);
   };
+
+  const handleRadioChange = (key: string, data: string) => {
+    setChoosenConfig((prev: ChoosenConfig) => {
+      return {
+        ...prev,
+        [key]: data,
+      };
+    });
+  };
+  console.log("choosen config", choosenConfig);
   const categoryData = category._id === product.categoryId ? category : null;
   return (
-    <Dialog open={dialogOpen}>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger
         onClick={() => setDialogOpen(true)}
         className="bg-orange-200 hover:bg-orange-300 text-orange-500 px-6 py-2 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
@@ -55,6 +70,9 @@ function ProductModal({ product, category }: ProductProps) {
 
                   <RadioGroup
                     defaultValue={value.availableOptions[0]}
+                    onValueChange={(data: string) => {
+                      handleRadioChange(key, data);
+                    }}
                     className="grid grid-cols-3 gap-4"
                   >
                     {value.availableOptions.map(option => (
