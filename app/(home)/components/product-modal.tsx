@@ -5,8 +5,9 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { addToCart } from "@/lib/store/features/cart/cartSlice";
-import { useAppDispatch } from "@/lib/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { Category, Product, Topping } from "@/lib/types";
+import { createHash } from "@/lib/utils";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import React, { useMemo } from "react";
@@ -22,6 +23,7 @@ type ChoosenConfig = {
 };
 function ProductModal({ product, category }: ProductProps) {
   const dispatch = useAppDispatch();
+  const cartItems = useAppSelector(state => state.cart.cartItems);
   const categoryData = category._id === product.categoryId ? category : null;
   const showToppingList = category.name.toLowerCase() === "pizza";
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -56,8 +58,19 @@ function ProductModal({ product, category }: ProductProps) {
       setSelectedToppings((prev: Topping[]) => [...prev, topping]);
     }
   };
-
-  const handleAddToCart = () => {
+  const alreadyInCart = useMemo(() => {
+    const configurationHash = createHash(
+      JSON.stringify({
+        productId: product._id,
+        priceConfiguration: Object.entries(choosenConfig).sort(([firstKey], [secondKey]) =>
+          firstKey.localeCompare(secondKey)
+        ),
+        toppingIds: selectedToppings.map(topping => topping._id).sort(),
+      })
+    );
+    return cartItems.some(item => item.configurationHash === configurationHash);
+  }, [cartItems, choosenConfig, product, selectedToppings]);
+  const handleAddToCart = async () => {
     const itemToAdd = {
       product,
       choosenConfiguration: {
@@ -65,9 +78,18 @@ function ProductModal({ product, category }: ProductProps) {
         selectedToppings,
       },
     };
-    dispatch(addToCart(itemToAdd));
-    console.log("handleAddToCart");
-    // setDialogOpen(false);
+    const configurationHash = createHash(
+      JSON.stringify({
+        productId: product._id,
+        priceConfiguration: Object.entries(choosenConfig).sort(([firstKey], [secondKey]) =>
+          firstKey.localeCompare(secondKey)
+        ),
+        toppingIds: selectedToppings.map(topping => topping._id).sort(),
+      })
+    );
+
+    dispatch(addToCart({ ...itemToAdd, configurationHash }));
+    setDialogOpen(false);
   };
 
   const handleRadioChange = (key: string, data: string) => {
@@ -142,9 +164,13 @@ function ProductModal({ product, category }: ProductProps) {
             )}
             <div className="flex items-center justify-between mt-8">
               <span className="font-bold">₹ {totalPrice}</span>
-              <Button onClick={handleAddToCart} className="bg-primary text-white h-10">
+              <Button
+                disabled={alreadyInCart}
+                onClick={handleAddToCart}
+                className="bg-primary text-white h-10"
+              >
                 <ShoppingCart className="mr-2" />
-                <p>Add to Cart</p>
+                {alreadyInCart ? <p>Already in Cart</p> : <p>Add to Cart</p>}
               </Button>
             </div>
           </div>

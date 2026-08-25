@@ -9,11 +9,22 @@ export default function StoreProvider({ children }: { children: React.ReactNode 
   const [store] = useState<AppStore>(() => makeStore());
 
   useEffect(() => {
-    const cartItems = localStorage.getItem("cartItems");
+    const storedCart = localStorage.getItem("cartItems");
 
-    if (cartItems) {
-      store.dispatch(initializeCart(JSON.parse(cartItems)));
+    if (storedCart) {
+      try {
+        const parsedCart = JSON.parse(storedCart);
+        store.dispatch(initializeCart(parsedCart));
+      } catch {
+        localStorage.removeItem("cartItems");
+      }
     }
+
+    const unsubscribe = store.subscribe(() => {
+      localStorage.setItem("cartItems", JSON.stringify(store.getState().cart.cartItems));
+    });
+
+    return unsubscribe;
   }, [store]);
 
   return <Provider store={store}>{children}</Provider>;
