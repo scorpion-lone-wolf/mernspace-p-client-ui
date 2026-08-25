@@ -9,7 +9,7 @@ import { useAppDispatch } from "@/lib/store/hooks";
 import { Category, Product, Topping } from "@/lib/types";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useMemo } from "react";
 import ToppingList from "./topping-list";
 
 type ProductProps = {
@@ -21,8 +21,8 @@ type ChoosenConfig = {
   [key: string]: string;
 };
 function ProductModal({ product, category }: ProductProps) {
+  const dispatch = useAppDispatch();
   const categoryData = category._id === product.categoryId ? category : null;
-
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const defaultConfig =
     categoryData &&
@@ -31,9 +31,20 @@ function ProductModal({ product, category }: ProductProps) {
         return { [key]: value.availableOptions[0] };
       })
       .reduce((acc, config) => ({ ...acc, ...config }), {});
+
   const [choosenConfig, setChoosenConfig] = React.useState<ChoosenConfig>(defaultConfig!);
   const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
-  const dispatch = useAppDispatch();
+
+  const totalPrice = useMemo(() => {
+    // here we will calculate th price of the product
+    const toppingPrice = selectedToppings.reduce((acc, topping) => acc + topping.price, 0);
+    const configPrice = Object.entries(choosenConfig).reduce((acc, [key, value]) => {
+      // based on this key and value we will calculate the price from product
+      acc += product?.priceConfiguration[key].availableOptions[value];
+      return acc;
+    }, 0);
+    return toppingPrice + configPrice;
+  }, [choosenConfig, selectedToppings, product]);
 
   const handleToppingCheckbox = (topping: Topping) => {
     if (selectedToppings.some((selectedTopping: Topping) => selectedTopping._id === topping._id)) {
@@ -66,7 +77,6 @@ function ProductModal({ product, category }: ProductProps) {
       };
     });
   };
-  console.log("choosen config", choosenConfig);
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger
@@ -128,7 +138,7 @@ function ProductModal({ product, category }: ProductProps) {
               selectedToppings={selectedToppings}
             />
             <div className="flex items-center justify-between mt-8">
-              <span className="font-bold">₹ 400</span>
+              <span className="font-bold">₹ {totalPrice}</span>
               <Button onClick={handleAddToCart} className="bg-primary text-white h-10">
                 <ShoppingCart className="mr-2" />
                 <p>Add to Cart</p>
