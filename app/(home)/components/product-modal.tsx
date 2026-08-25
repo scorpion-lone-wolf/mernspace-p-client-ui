@@ -23,6 +23,7 @@ type ChoosenConfig = {
 function ProductModal({ product, category }: ProductProps) {
   const dispatch = useAppDispatch();
   const categoryData = category._id === product.categoryId ? category : null;
+  const showToppingList = category.name.toLowerCase() === "pizza";
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const defaultConfig =
     categoryData &&
@@ -133,10 +134,12 @@ function ProductModal({ product, category }: ProductProps) {
                   </RadioGroup>
                 </div>
               ))}
-            <ToppingList
-              handleToppingCheckbox={handleToppingCheckbox}
-              selectedToppings={selectedToppings}
-            />
+            {showToppingList && (
+              <ToppingList
+                handleToppingCheckbox={handleToppingCheckbox}
+                selectedToppings={selectedToppings}
+              />
+            )}
             <div className="flex items-center justify-between mt-8">
               <span className="font-bold">₹ {totalPrice}</span>
               <Button onClick={handleAddToCart} className="bg-primary text-white h-10">
