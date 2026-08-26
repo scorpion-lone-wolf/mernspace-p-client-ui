@@ -1,7 +1,7 @@
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Category, Product } from "@/lib/types";
 import Image from "next/image";
-import { Suspense } from "react";
+import { Suspense, useMemo } from "react";
 import ProductModal from "./product-modal";
 
 // export type Product = {
@@ -14,6 +14,12 @@ import ProductModal from "./product-modal";
 type PropTypes = { product: Product; category: Category };
 
 const ProductCard = ({ product, category }: PropTypes) => {
+  const basePrice = useMemo(() => {
+    return Object.entries(product.priceConfiguration).reduce((acc, [_, value]) => {
+      const minValue = Math.min(...Object.values(value.availableOptions));
+      return acc + minValue;
+    }, 0);
+  }, [product]);
   return (
     <Card className="border-none rounded-xl">
       <CardHeader className="flex items-center justify-center">
@@ -28,7 +34,7 @@ const ProductCard = ({ product, category }: PropTypes) => {
           <span>From </span>
           {/* <span className="font-bold">₹{product.price}</span>
            */}
-          <span className="font-bold">₹{500}</span>
+          <span className="font-bold">₹{basePrice}</span>
         </p>
         <Suspense fallback={<div>Loading...</div>}>
           <ProductModal product={product} category={category} />
