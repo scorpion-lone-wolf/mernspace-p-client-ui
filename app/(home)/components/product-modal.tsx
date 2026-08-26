@@ -89,6 +89,9 @@ function ProductModal({ product, category }: ProductProps) {
     );
 
     dispatch(addToCart({ ...itemToAdd, configurationHash }));
+    // clear the selected toppings
+    setSelectedToppings([]);
+    // close the dialog
     setDialogOpen(false);
   };
 
