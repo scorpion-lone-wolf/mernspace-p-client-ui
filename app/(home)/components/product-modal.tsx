@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
+import { toast } from "@/components/ui/toast";
 import { addToCart } from "@/lib/store/features/cart/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { Category, Product, Topping } from "@/lib/types";
@@ -93,6 +94,11 @@ function ProductModal({ product, category }: ProductProps) {
     setSelectedToppings([]);
     // close the dialog
     setDialogOpen(false);
+    // show the toster
+    toast.add({
+      title: "Added to cart",
+      description: "Item added to cart successfully",
+    });
   };
 
   const handleRadioChange = (key: string, data: string) => {

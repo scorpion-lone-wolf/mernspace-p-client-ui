@@ -1,4 +1,5 @@
 import Header from "@/components/custom/header";
+import { Toaster } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <StoreProvider>
           <Header />
           <main>{children}</main>
+          <Toaster />
         </StoreProvider>
       </body>
     </html>
