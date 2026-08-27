@@ -1,6 +1,7 @@
 "use client";
 import { Resturants } from "@/lib/types";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
@@ -10,23 +11,29 @@ type Props = {
 function SelectBox({ resturants }: Readonly<Props>) {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
   const availableResturants = Array.isArray(resturants) ? resturants : [];
   const currentResturantId = searchParams.get("restaurant");
+  const [selectedResturantId, setSelectedResturantId] = useState<string | null>(
+    currentResturantId
+  );
   const selectedResturant = availableResturants.find(
-    resturant => resturant.id === currentResturantId
+    resturant => resturant.id === selectedResturantId
   );
 
   return (
     <Select
-      value={currentResturantId}
+      value={selectedResturantId}
       onValueChange={value => {
+        setSelectedResturantId(value);
         const params = new URLSearchParams(searchParams.toString());
         if (value === null) {
           params.delete("restaurant");
         } else {
           params.set("restaurant", value);
         }
-        router.push(`/?${params.toString()}`);
+        const query = params.toString();
+        router.push(query ? `${pathname}?${query}` : pathname);
       }}
     >
       <SelectTrigger className="w-[180px]" disabled={availableResturants.length === 0}>
