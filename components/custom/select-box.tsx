@@ -2,33 +2,41 @@
 import { Resturants } from "@/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 type Props = {
-  resturants: Resturants[];
+  resturants?: Resturants[];
 };
 function SelectBox({ resturants }: Readonly<Props>) {
   const searchParams = useSearchParams();
-  const restaurant = resturants.find(
-    restaurant => restaurant.id === searchParams.get("restaurant")
-  );
-  const [selectedResturant, setSelectedResturant] = useState<Resturants | null>(restaurant ?? null);
   const router = useRouter();
+  const availableResturants = Array.isArray(resturants) ? resturants : [];
+  const currentResturantId = searchParams.get("restaurant");
+  const selectedResturant = availableResturants.find(
+    resturant => resturant.id === currentResturantId
+  );
 
   return (
     <Select
+      value={currentResturantId}
       onValueChange={value => {
-        const restaurant = resturants.find(restaurant => restaurant.id === value);
-        setSelectedResturant(restaurant ?? null);
-        if (restaurant) router.push(`/?restaurant=${restaurant.id}`);
+        const params = new URLSearchParams(searchParams.toString());
+        if (value === null) {
+          params.delete("restaurant");
+        } else {
+          params.set("restaurant", value);
+        }
+        router.push(`/?${params.toString()}`);
       }}
     >
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select Resturants">{selectedResturant?.name}</SelectValue>
+      <SelectTrigger className="w-[180px]" disabled={availableResturants.length === 0}>
+        <SelectValue>
+          {selectedResturant?.name ??
+            (availableResturants.length ? "Select restaurant" : "No restaurants available")}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
-        {resturants.map((resturant: Resturants) => (
+        {availableResturants.map(resturant => (
           <SelectItem key={resturant.id} value={resturant.id}>
             {resturant.name}
           </SelectItem>

@@ -4,6 +4,7 @@ import ProductCard from "./product-card";
 
 async function ProductList({ searchParams }: { searchParams: { restaurant: string } }) {
   const resolvedSearchParams = await searchParams;
+  const restaurantId = resolvedSearchParams.restaurant;
   // fetch all categories
   const categoriesPromise = fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/categories?limit=100`,
@@ -14,25 +15,27 @@ async function ProductList({ searchParams }: { searchParams: { restaurant: strin
     }
   );
   // fetch all products
-  const productPromise = fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/products?tenantId=${resolvedSearchParams.restaurant}&limit=100`,
-    {
-      next: {
-        revalidate: 60 * 60, // 1 hour cache
-      },
-    }
-  );
+  const productPromise = restaurantId
+    ? fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/products?tenantId=${restaurantId}&limit=100`,
+        {
+          next: {
+            revalidate: 60 * 60, // 1 hour cache
+          },
+        }
+      )
+    : Promise.resolve(null);
   // fetching data in parallel
   const [categoriesResponse, productResponse] = await Promise.all([
     categoriesPromise,
     productPromise,
   ]);
 
-  if (!categoriesResponse.ok) throw new Error("Failed to fetch tenants");
-  if (!productResponse.ok) throw new Error("Failed to fetch tenants");
+  if (!categoriesResponse.ok) throw new Error("Failed to fetch categories");
+  if (productResponse && !productResponse.ok) throw new Error("Failed to fetch products");
 
-  const categories: Category[] = (await categoriesResponse.json()).data;
-  const products: Product[] = (await productResponse.json()).data;
+  const categories: Category[] = (await categoriesResponse.json()).data ?? [];
+  const products: Product[] = productResponse ? (await productResponse.json()).data ?? [] : [];
   return (
     <section>
       <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 xl:px-12 py-1 flex justify-between">

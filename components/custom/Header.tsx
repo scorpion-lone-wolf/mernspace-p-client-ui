@@ -31,7 +31,7 @@ async function Header() {
               fill="#484848"
             />
           </svg>
-          <SelectBox resturants={resturants.data} />
+          <SelectBox resturants={resturants.data ?? []} />
         </div>
         <div className="flex justify-center gap-4">
           <ul className="flex space-x-1.5 capitalize">
