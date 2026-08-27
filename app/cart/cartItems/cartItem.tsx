@@ -1,4 +1,5 @@
-import { changeQuantity, CartItem as Item } from "@/lib/store/features/cart/cartSlice";
+import { Button } from "@/components/ui/button";
+import { changeQuantity, CartItem as Item, removeItem } from "@/lib/store/features/cart/cartSlice";
 import { useAppDispatch } from "@/lib/store/hooks";
 import { X } from "lucide-react";
 import Image from "next/image";
@@ -29,9 +30,7 @@ const CartItem = ({ item }: { item: Item }) => {
           <div>
             <QtyChanger
               handleQtyChange={qty => {
-                dispatch(
-                  changeQuantity({ configurationHash: item.configurationHash, delta: qty })
-                );
+                dispatch(changeQuantity({ configurationHash: item.configurationHash, delta: qty }));
               }}
             >
               {item.quantity}
@@ -39,9 +38,14 @@ const CartItem = ({ item }: { item: Item }) => {
           </div>
           <div className="flex">
             <div className="font-bold w-12">&#8377;300</div>
-            <button className="ml-4" onClick={() => {}}>
+            <Button
+              className="ml-4 cursor-pointer"
+              onClick={() => {
+                dispatch(removeItem({ configurationHash: item.configurationHash }));
+              }}
+            >
               <X />
-            </button>
+            </Button>
           </div>
         </div>
       </div>

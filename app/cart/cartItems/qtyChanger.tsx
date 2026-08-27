@@ -7,7 +7,7 @@ interface IProps {
 }
 const QtyChanger = ({ handleQtyChange, children }: IProps) => {
   return (
-    <div className="flex items-center bg-gray-100 rounded-full">
+    <div className="flex items-center bg-gray-100 rounded-full cursor-pointer">
       <button
         type="button"
         onClick={() => {

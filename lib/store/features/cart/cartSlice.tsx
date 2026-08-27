@@ -71,10 +71,16 @@ export const cartSlice = createSlice({
         item.quantity = nextQuantity;
       }
     },
+    removeItem: (state, action: PayloadAction<{ configurationHash: string }>) => {
+      state.cartItems = state.cartItems.filter(
+        item => item.configurationHash !== action.payload.configurationHash
+      );
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { addToCart, clearCart, initializeCart, changeQuantity } = cartSlice.actions;
+export const { addToCart, clearCart, initializeCart, changeQuantity, removeItem } =
+  cartSlice.actions;
 
 export default cartSlice.reducer;
