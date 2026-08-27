@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Suspense } from "react";
 import ProductList from "./components/product-list";
 
-async function Home() {
+async function Home({ searchParams }: { searchParams: { restaurant: string } }) {
   return (
     <>
       <section className="bg-white">
@@ -26,7 +26,7 @@ async function Home() {
         </div>
       </section>
       <Suspense fallback={<div>Loading...</div>}>
-        <ProductList />
+        <ProductList searchParams={searchParams} />
       </Suspense>
     </>
   );

@@ -2,7 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Category, Product } from "@/lib/types";
 import ProductCard from "./product-card";
 
-async function ProductList() {
+async function ProductList({ searchParams }: { searchParams: { restaurant: string } }) {
+  const resolvedSearchParams = await searchParams;
   // fetch all categories
   const categoriesPromise = fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/categories?limit=100`,
@@ -14,8 +15,7 @@ async function ProductList() {
   );
   // fetch all products
   const productPromise = fetch(
-    // TODO: Add dynamic tenantId
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/products?tenantId=06c08096-664a-4ca8-b97c-ae8b4a0f3fad&limit=100`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/products?tenantId=${resolvedSearchParams.restaurant}&limit=100`,
     {
       next: {
         revalidate: 60 * 60, // 1 hour cache
