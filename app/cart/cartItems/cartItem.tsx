@@ -1,12 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { changeQuantity, CartItem as Item, removeItem } from "@/lib/store/features/cart/cartSlice";
 import { useAppDispatch } from "@/lib/store/hooks";
+import { useProductPrice } from "@/lib/use-product-price";
 import { X } from "lucide-react";
 import Image from "next/image";
 import QtyChanger from "./qtyChanger";
 
 const CartItem = ({ item }: { item: Item }) => {
   const dispatch = useAppDispatch();
+  const { totalPrice } = useProductPrice({
+    product: item.product,
+    selectedPriceConfiguration: item.choosenConfiguration.priceConfiguration,
+    selectedToppings: item.choosenConfiguration.selectedToppings,
+    quantity: item.quantity,
+  });
+
   return (
     <>
       <div key={item.configurationHash} className="grid grid-cols-2">
@@ -37,7 +45,7 @@ const CartItem = ({ item }: { item: Item }) => {
             </QtyChanger>
           </div>
           <div className="flex">
-            <div className="font-bold w-12">&#8377;300</div>
+            <div className="font-bold w-12">&#8377;{totalPrice}</div>
             <Button
               className="ml-4 cursor-pointer"
               onClick={() => {

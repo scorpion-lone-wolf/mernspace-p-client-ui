@@ -8,6 +8,7 @@ import { toast } from "@/components/ui/toast";
 import { addToCart } from "@/lib/store/features/cart/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks";
 import { Category, Product, Topping } from "@/lib/types";
+import { useProductPrice } from "@/lib/use-product-price";
 import { createHash } from "@/lib/utils";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
@@ -39,16 +40,11 @@ function ProductModal({ product, category }: ProductProps) {
   const [choosenConfig, setChoosenConfig] = React.useState<ChoosenConfig>(defaultConfig!);
   const [selectedToppings, setSelectedToppings] = React.useState<Topping[]>([]);
 
-  const totalPrice = useMemo(() => {
-    // here we will calculate th price of the product
-    const toppingPrice = selectedToppings.reduce((acc, topping) => acc + topping.price, 0);
-    const configPrice = Object.entries(choosenConfig).reduce((acc, [key, value]) => {
-      // based on this key and value we will calculate the price from product
-      acc += product?.priceConfiguration[key].availableOptions[value];
-      return acc;
-    }, 0);
-    return toppingPrice + configPrice;
-  }, [choosenConfig, selectedToppings, product]);
+  const { totalPrice } = useProductPrice({
+    product,
+    selectedPriceConfiguration: choosenConfig,
+    selectedToppings,
+  });
 
   const handleToppingCheckbox = (topping: Topping) => {
     if (selectedToppings.some((selectedTopping: Topping) => selectedTopping._id === topping._id)) {
