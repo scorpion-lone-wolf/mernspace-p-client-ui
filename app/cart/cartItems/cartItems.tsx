@@ -44,10 +44,12 @@ const CartItems = () => {
       ))}
       <div className="flex justify-between items-center">
         <span className="font-bold text-xl">&#8377;{totalPriceToPay}</span>
-        <Button>
-          Checkout
-          <ArrowRight size={16} className="ml-2" />
-        </Button>
+        <Link href={`/checkout?restaurant=${restaurantId}`}>
+          <Button size="lg">
+            Checkout
+            <ArrowRight size={16} className="ml-2" />
+          </Button>
+        </Link>
       </div>
     </div>
   );
