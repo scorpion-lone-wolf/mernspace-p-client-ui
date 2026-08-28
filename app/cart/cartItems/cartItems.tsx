@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useAppSelector } from "@/lib/store/hooks";
+import { useCartTotal } from "@/lib/use-product-price";
 import { ArrowRight, ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -14,6 +15,7 @@ const CartItems = () => {
   const cart = restaurantId
     ? cartItems.filter(cartItem => cartItem.product.tenantId === restaurantId)
     : [];
+  const totalPriceToPay = useCartTotal(cart);
 
   if (!cart.length) {
     return (
@@ -35,10 +37,13 @@ const CartItems = () => {
   return (
     <div className="flex flex-col gap-8 ">
       {cart.map((cartItem, index) => (
-        <CartItem key={`${cartItem.configurationHash || cartItem.product._id}-${index}`} item={cartItem} />
+        <CartItem
+          key={`${cartItem.configurationHash || cartItem.product._id}-${index}`}
+          item={cartItem}
+        />
       ))}
       <div className="flex justify-between items-center">
-        <span className="font-bold text-xl">&#8377;{4000}</span>
+        <span className="font-bold text-xl">&#8377;{totalPriceToPay}</span>
         <Button>
           Checkout
           <ArrowRight size={16} className="ml-2" />
