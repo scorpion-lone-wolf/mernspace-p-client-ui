@@ -3,6 +3,7 @@ import { Phone } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import CartCounter from "./cart-counter";
+import Logout from "./logout";
 import MenuLink from "./menu-link";
 import SelectBox from "./select-box";
 
@@ -58,7 +59,13 @@ async function Header() {
             <Phone />
             <span>+91 123456789</span>
           </div>
-          <Button>{session ? "Logout" : "Login"}</Button>
+          {session ? (
+            <Logout />
+          ) : (
+            <Button>
+              <Link href="/login">Login</Link>
+            </Button>
+          )}
         </div>
       </nav>
     </header>
