@@ -1,3 +1,4 @@
+import { getSession } from "@/lib/session";
 import { Phone } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
@@ -6,6 +7,9 @@ import MenuLink from "./menu-link";
 import SelectBox from "./select-box";
 
 async function Header() {
+  const session = await getSession();
+  // Session {"user":{"data":[{"id":"099c28f7-e738-483d-9353-326f3017ca46","firstName":"John","lastName":"Doe","role":"CUSTOMER","email":"customer@email.com","tenant":null}]}}
+  // console.log("Session", JSON.stringify(session));
   const tenants = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/tenants?limit=100`, {
     next: {
       revalidate: 60 * 60, // 1 hour cache
@@ -54,7 +58,7 @@ async function Header() {
             <Phone />
             <span>+91 123456789</span>
           </div>
-          <Button>Logout</Button>
+          <Button>{session ? "Logout" : "Login"}</Button>
         </div>
       </nav>
     </header>
