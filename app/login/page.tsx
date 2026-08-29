@@ -6,7 +6,8 @@ import login from "@/lib/actions/login";
 import { LoaderCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useActionState } from "react";
+
+import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 
 const SubmitButton = () => {
@@ -33,12 +34,24 @@ const initialState = {
 
 const Login = () => {
   const [state, formAction] = useActionState(login, initialState);
+
+  useEffect(() => {
+    // if user is logged in then redirect to home page
+    if (state.type === "success") {
+      window.location.href = "/";
+    }
+  }, [state]);
   return (
     <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
       <div className="flex items-center justify-center py-12">
         <div className="mx-auto grid w-[350px] gap-6">
           <div className="grid gap-2 text-center">
-            {/* <p aria-live="polite"></p> */}
+            <p
+              aria-live="polite"
+              className={`${state.type === "error" ? "text-red-500" : "text-green-500"}`}
+            >
+              {state.message}
+            </p>
             <h1 className="text-3xl font-bold">Login</h1>
             <p className="text-balance text-muted-foreground">
               Enter your email below to login to your account
@@ -62,7 +75,7 @@ const Login = () => {
               <SubmitButton />
             </div>
           </form>
-          {state.message && (
+          {/* {state.message && (
             <p
               aria-live="polite"
               className={
@@ -71,7 +84,7 @@ const Login = () => {
             >
               {state.message}
             </p>
-          )}
+          )} */}
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="underline">
