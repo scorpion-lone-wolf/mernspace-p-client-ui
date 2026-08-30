@@ -1,4 +1,5 @@
 import Header from "@/components/custom/header";
+import Refresher from "@/components/custom/refresher";
 import { Toaster } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -18,9 +19,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={cn("h-full", "antialiased", "font-manrope", manrope.variable)}>
       <body className="min-h-full flex flex-col">
         <StoreProvider>
-          <Header />
-          <main>{children}</main>
-          <Toaster />
+          <Refresher>
+            <Header />
+            <main>{children}</main>
+            <Toaster />
+          </Refresher>
         </StoreProvider>
       </body>
     </html>
