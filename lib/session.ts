@@ -15,6 +15,7 @@ export const getSession = async () => {
 const getMe = async () => {
   const cookieStore = await cookies();
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/auth/me`, {
+    method: "POST",
     headers: {
       Authorization: `Bearer ${cookieStore.get("access_token")?.value}`,
     },
