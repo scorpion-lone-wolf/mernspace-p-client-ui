@@ -22,10 +22,11 @@ import { redirect } from "next/navigation";
 export default async function Checkout({ searchParams }: { searchParams: { restaurant: string } }) {
   const params = await searchParams;
   const session = await getSession();
-  const queryString = new URLSearchParams(params).toString();
+  const checkoutParams = new URLSearchParams(params);
+  const returnUrl = `/checkout?${checkoutParams.toString()}`;
 
   if (!session) {
-    redirect(`/login?${queryString}`);
+    redirect(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
   }
   return (
     <div className="container mx-auto mt-16 flex w-full max-w-[1200px] items-center justify-center gap-6 px-4">

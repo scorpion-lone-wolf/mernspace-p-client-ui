@@ -6,6 +6,7 @@ import login from "@/lib/actions/login";
 import { LoaderCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
@@ -34,11 +35,14 @@ const initialState = {
 
 const Login = () => {
   const [state, formAction] = useActionState(login, initialState);
+  const searchParams = useSearchParams();
+  console.log(searchParams);
+  const returnTo = searchParams.get("returnUrl");
 
   useEffect(() => {
     // if user is logged in then redirect to home page
     if (state.type === "success") {
-      window.location.href = "/";
+      window.location.href = returnTo ? returnTo : "/";
     }
   }, [state]);
   return (

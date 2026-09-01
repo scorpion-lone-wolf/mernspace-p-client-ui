@@ -15,7 +15,8 @@ export const getSession = async () => {
 const getMe = async () => {
   const cookieStore = await cookies();
   const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/auth/me`, {
-    method: "POST",
+    method: "GET",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${cookieStore.get("access_token")?.value}`,
     },
@@ -24,7 +25,8 @@ const getMe = async () => {
     return null;
   }
   const data = await response.json();
+
   return {
-    user: data as User,
+    user: data.data[0] as User,
   };
 };
