@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
+import QueryProvider from "./QueryProvider";
 import StoreProvider from "./store-provider";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
@@ -19,11 +20,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={cn("h-full", "antialiased", "font-manrope", manrope.variable)}>
       <body className="min-h-full flex flex-col">
         <StoreProvider>
-          <Refresher>
-            <Header />
-            <main>{children}</main>
-            <Toaster />
-          </Refresher>
+          <QueryProvider>
+            <Refresher>
+              <Header />
+              <main>{children}</main>
+              <Toaster />
+            </Refresher>
+          </QueryProvider>
         </StoreProvider>
       </body>
     </html>
