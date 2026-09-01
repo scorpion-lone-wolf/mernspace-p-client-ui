@@ -15,15 +15,16 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { getCustmer } from "@/lib/http/api";
+import { Customer } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 
 import { Coins, CreditCard, Plus } from "lucide-react";
 
 function CustomerForm() {
-  const { data: customer, isLoading } = useQuery({
+  const { data: customer, isLoading } = useQuery<Customer>({
     queryKey: ["customer"],
     queryFn: async () => {
-      return (await getCustmer())?.data;
+      return (await getCustmer())?.data?.data;
     },
   });
   if (isLoading) {
@@ -43,7 +44,7 @@ function CustomerForm() {
                 id="fname"
                 type="text"
                 className="w-full"
-                defaultValue={customer?.data?.firstName}
+                defaultValue={customer?.firstName}
                 disabled
               />
             </div>
@@ -53,7 +54,7 @@ function CustomerForm() {
                 id="lname"
                 type="text"
                 className="w-full"
-                defaultValue={customer?.data?.lastName}
+                defaultValue={customer?.lastName}
                 disabled
               />
             </div>
@@ -63,7 +64,7 @@ function CustomerForm() {
                 id="email"
                 type="text"
                 className="w-full"
-                defaultValue={customer?.data?.email}
+                defaultValue={customer?.email}
                 disabled
               />
             </div>
@@ -96,7 +97,17 @@ function CustomerForm() {
                   </Dialog>
                 </div>
                 <RadioGroup defaultValue="option-one" className="grid grid-cols-2 gap-6 mt-2">
-                  <Card className="p-6">
+                  {customer?.addresses?.map(address => (
+                    <Card key={address.text} className="p-6">
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="option-one" id="option-one" />
+                        <Label htmlFor="option-one" className="leading-normal">
+                          {address.text}
+                        </Label>
+                      </div>
+                    </Card>
+                  ))}
+                  {/* <Card className="p-6">
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="option-one" id="option-one" />
                       <Label htmlFor="option-one" className="leading-normal">
@@ -112,7 +123,7 @@ function CustomerForm() {
                         400069
                       </Label>
                     </div>
-                  </Card>
+                  </Card> */}
                 </RadioGroup>
               </div>
             </div>
