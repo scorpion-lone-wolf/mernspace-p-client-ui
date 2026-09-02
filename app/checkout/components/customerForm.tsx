@@ -1,15 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -18,7 +9,8 @@ import { getCustmer } from "@/lib/http/api";
 import { Customer } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 
-import { Coins, CreditCard, Plus } from "lucide-react";
+import { Coins, CreditCard } from "lucide-react";
+import AddAddress from "./addAddress";
 
 function CustomerForm() {
   const { data: customer, isLoading } = useQuery<Customer>({
@@ -72,29 +64,7 @@ function CustomerForm() {
               <div>
                 <div className="flex items-center justify-between">
                   <Label htmlFor="name">Address</Label>
-                  <Dialog>
-                    <DialogTrigger render={<Button size="sm" variant="link" />}>
-                      <Plus size="16" />
-                      <span className="ml-2">Add New Address</span>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Add Address</DialogTitle>
-                        <DialogDescription>
-                          We can save your address for next time order.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div>
-                          <Label htmlFor="address">Address</Label>
-                          <Textarea className="mt-2" />
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <Button type="submit">Save changes</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                  <AddAddress customerId={customer?._id} />
                 </div>
                 <RadioGroup defaultValue="option-one" className="grid grid-cols-2 gap-6 mt-2">
                   {customer?.addresses?.map(address => (
@@ -107,23 +77,6 @@ function CustomerForm() {
                       </div>
                     </Card>
                   ))}
-                  {/* <Card className="p-6">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option-one" id="option-one" />
-                      <Label htmlFor="option-one" className="leading-normal">
-                        123, ABC Street, Malad West, Mumbai, Maharashtra, India 400064
-                      </Label>
-                    </div>
-                  </Card>
-                  <Card className="p-6">
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="option-two" id="option-two" />
-                      <Label htmlFor="option-two" className="leading-normal">
-                        Flat No. 501, Sunshine Apartments, Andheri East, Mumbai, Maharashtra, India
-                        400069
-                      </Label>
-                    </div>
-                  </Card> */}
                 </RadioGroup>
               </div>
             </div>
