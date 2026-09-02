@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { addAddress } from "@/lib/http/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -69,9 +69,16 @@ function AddAddress({ customerId }: { customerId: string | undefined }) {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={isPending}>
-              Save changes
-            </Button>
+            {isPending ? (
+              <Button type="submit" disabled={true}>
+                <div className="flex items-center gap-2">
+                  <Loader className="animate-spin" />
+                  <span>Please wait</span>
+                </div>
+              </Button>
+            ) : (
+              <Button type="submit">Save changes</Button>
+            )}
           </DialogFooter>
         </form>
       </DialogContent>
