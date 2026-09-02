@@ -39,10 +39,14 @@ function AddAddress({ customerId }: { customerId: string | undefined }) {
       addressForm.reset();
     },
   });
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    const address = data.address;
-    if (!customerId) return;
-    mutate({ customerId, address });
+  function addAddressSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.stopPropagation();
+
+    return addressForm.handleSubmit((data: z.infer<typeof formSchema>) => {
+      const address = data.address;
+      if (!customerId) return;
+      mutate({ customerId, address });
+    })(event);
   }
   return (
     <Dialog
@@ -57,7 +61,7 @@ function AddAddress({ customerId }: { customerId: string | undefined }) {
         <span className="ml-2">Add New Address</span>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={addressForm.handleSubmit(onSubmit)}>
+        <form onSubmit={addAddressSubmit}>
           <DialogHeader>
             <DialogTitle>Add Address</DialogTitle>
             <DialogDescription>We can save your address for next time order.</DialogDescription>
