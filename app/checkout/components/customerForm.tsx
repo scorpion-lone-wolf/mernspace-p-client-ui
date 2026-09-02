@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +13,7 @@ import { Coins, CreditCard } from "lucide-react";
 import { useForm, useWatch } from "react-hook-form";
 import * as z from "zod";
 import AddAddress from "./addAddress";
+import OrderSummary from "./orderSummary";
 
 const formSchema = z.object({
   address: z.string().min(1, "Please select a delivery address"),
@@ -93,13 +93,23 @@ function CustomerForm() {
                   <RadioGroup
                     className="grid grid-cols-2 gap-6 mt-2"
                     value={selectedAddress}
-                    onValueChange={(address) => customerForm.setValue("address", address, { shouldDirty: true, shouldValidate: true })}
+                    onValueChange={address =>
+                      customerForm.setValue("address", address, {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      })
+                    }
                   >
                     {customer?.addresses?.map((address, index) => (
                       <Card
                         key={address.text}
                         className={`cursor-pointer p-6 ${selectedAddress === address.text ? "border-primary" : ""}`}
-                        onClick={() => customerForm.setValue("address", address.text, { shouldDirty: true, shouldValidate: true })}
+                        onClick={() =>
+                          customerForm.setValue("address", address.text, {
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          })
+                        }
                       >
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value={address.text} id={`address-${index}`} />
@@ -110,7 +120,9 @@ function CustomerForm() {
                       </Card>
                     ))}
                   </RadioGroup>
-                  {errors.address && <p className="mt-2 text-sm text-destructive">{errors.address.message}</p>}
+                  {errors.address && (
+                    <p className="mt-2 text-sm text-destructive">{errors.address.message}</p>
+                  )}
                 </div>
               </div>
               <div className="grid gap-3">
@@ -118,11 +130,22 @@ function CustomerForm() {
                 <RadioGroup
                   className="flex gap-6"
                   value={selectedPaymentMode}
-                  onValueChange={(paymentMode) =>
-                    customerForm.setValue("paymentMode", paymentMode as "cash" | "card", { shouldDirty: true, shouldValidate: true })
+                  onValueChange={paymentMode =>
+                    customerForm.setValue("paymentMode", paymentMode as "cash" | "card", {
+                      shouldDirty: true,
+                      shouldValidate: true,
+                    })
                   }
                 >
-                  <div className="w-36" onClick={() => customerForm.setValue("paymentMode", "card", { shouldDirty: true, shouldValidate: true })}>
+                  <div
+                    className="w-36"
+                    onClick={() =>
+                      customerForm.setValue("paymentMode", "card", {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      })
+                    }
+                  >
                     <RadioGroupItem
                       value={"card"}
                       id={"card"}
@@ -137,7 +160,15 @@ function CustomerForm() {
                       <span className="ml-2">Card</span>
                     </Label>
                   </div>
-                  <div className="w-36" onClick={() => customerForm.setValue("paymentMode", "cash", { shouldDirty: true, shouldValidate: true })}>
+                  <div
+                    className="w-36"
+                    onClick={() =>
+                      customerForm.setValue("paymentMode", "cash", {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      })
+                    }
+                  >
                     <RadioGroupItem
                       value={"cash"}
                       id={"cash"}
@@ -153,7 +184,9 @@ function CustomerForm() {
                     </Label>
                   </div>
                 </RadioGroup>
-                {errors.paymentMode && <p className="text-sm text-destructive">{errors.paymentMode.message}</p>}
+                {errors.paymentMode && (
+                  <p className="text-sm text-destructive">{errors.paymentMode.message}</p>
+                )}
               </div>
               <div className="grid gap-3">
                 <Label htmlFor="comment">Comment</Label>
@@ -162,42 +195,7 @@ function CustomerForm() {
             </div>
           </CardContent>
         </Card>
-        <Card className="w-2/5 border-none h-auto self-start">
-          <CardHeader>
-            <CardTitle>Order summary</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-4 pt-6">
-            <div className="flex items-center justify-between">
-              <span>Subtotal</span>
-              <span className="font-bold">₹8130</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Taxes</span>
-              <span className="font-bold">₹82</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Delivery charges</span>
-              <span className="font-bold">₹100</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Discount</span>
-              <span className="font-bold">₹0</span>
-            </div>
-            <hr />
-            <div className="flex items-center justify-between">
-              <span className="font-bold">Order total</span>
-              <span className="font-bold">₹8300</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <Input id="fname" type="text" className="w-full" placeholder="Coupon code" />
-              <Button type="button" variant={"outline"}>Apply</Button>
-            </div>
-
-            <div className="text-right mt-6">
-              <Button type="submit">Place order</Button>
-            </div>
-          </CardContent>
-        </Card>
+        <OrderSummary />
       </div>
     </form>
   );
