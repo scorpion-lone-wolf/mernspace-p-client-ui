@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { Customer } from "@/lib/types";
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
   withCredentials: true,
@@ -8,7 +9,7 @@ export const api = axios.create({
   },
 });
 const ORDER_SERVICE_PREFIX = "/api/order";
-export const getCustmer = () => api.get(`${ORDER_SERVICE_PREFIX}/customer`);
+export const getCustmer = () => api.get<{ data: Customer }>(`${ORDER_SERVICE_PREFIX}/customer`);
 export const addAddress = (customerId: string, address: string) =>
   api.patch(`${ORDER_SERVICE_PREFIX}/customer/addresses/${customerId}`, {
     address,
