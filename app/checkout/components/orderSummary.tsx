@@ -1,13 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { verifyCoupon } from "@/lib/http/api";
 import { useAppSelector } from "@/lib/store/hooks";
-import { useMemo, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
+import React, { useMemo, useRef, useState } from "react";
 
 const TAXES_PERCENTAGE = 0.12;
 const DELIVERY_CHARGES = 100;
+
 function OrderSummary() {
+  const searchParams = useSearchParams();
+  const couponCodeRef = useRef<HTMLInputElement>(null);
   const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [couponError, setCouponError] = useState<string | null>(null);
+
   const cart = useAppSelector(state => state.cart.cartItems);
   //   subtotal
   const calculatedTotal = useMemo(() => {
@@ -37,12 +45,45 @@ function OrderSummary() {
   const taxes = useMemo(() => {
     const amountAfterDiscount = calculatedTotal - discountAmount;
     // 12% tax (Currently hardcoded)
-    return Math.round(amountAfterDiscount * 0.12);
+    return Math.round(amountAfterDiscount * TAXES_PERCENTAGE);
   }, [calculatedTotal, discountAmount]);
   //   grand total
   const grandTotal = useMemo(() => {
     return calculatedTotal - discountAmount + taxes + DELIVERY_CHARGES;
   }, [calculatedTotal, taxes, discountAmount]);
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["coupon"],
+    mutationFn: async () => {
+      const tenant = searchParams.get("restaurant");
+      if (!tenant) {
+        throw new Error("Restaurant is missing from the checkout URL");
+      }
+      const code = couponCodeRef.current?.value.trim();
+      if (!code) {
+        throw new Error("Enter a coupon code");
+      }
+      return (await verifyCoupon(code, tenant)).data.data;
+    },
+    onSuccess: data => {
+      if (data.valid) {
+        setDiscountPercentage(data.discount);
+        setCouponError(null);
+        return;
+      }
+      setDiscountPercentage(0);
+      setCouponError("This coupon is invalid or expired");
+    },
+    onError: error => {
+      setDiscountPercentage(0);
+      setCouponError(error instanceof Error ? error.message : "Unable to validate the coupon");
+    },
+  });
+  const handleCouponValidation = (event: React.MouseEvent) => {
+    event.preventDefault();
+    setCouponError(null);
+    mutate();
+  };
   return (
     <Card className="w-2/5 border-none h-auto self-start">
       <CardHeader>
@@ -70,10 +111,19 @@ function OrderSummary() {
           <span className="font-bold">Order total</span>
           <span className="font-bold">₹{grandTotal}</span>
         </div>
+        {couponError && <span className="text-red-500">{couponError}</span>}
         <div className="flex items-center gap-4">
-          <Input id="fname" type="text" className="w-full" placeholder="Coupon code" />
-          <Button type="button" variant={"outline"}>
-            Apply
+          <Input
+            id="coupon"
+            name="code"
+            type="text"
+            className="w-full"
+            placeholder="Coupon code"
+            ref={couponCodeRef}
+            aria-invalid={Boolean(couponError)}
+          />
+          <Button onClick={handleCouponValidation} type="button" variant={"outline"} disabled={isPending}>
+            {isPending ? "Checking..." : "Apply"}
           </Button>
         </div>
 
