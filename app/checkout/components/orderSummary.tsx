@@ -48,9 +48,12 @@ function OrderSummary() {
     return Math.round(amountAfterDiscount * TAXES_PERCENTAGE);
   }, [calculatedTotal, discountAmount]);
   //   grand total
-  const grandTotal = useMemo(() => {
+  const grandTotalWithDiscount = useMemo(() => {
     return calculatedTotal - discountAmount + taxes + DELIVERY_CHARGES;
   }, [calculatedTotal, taxes, discountAmount]);
+  const grandTotalWithoutDiscount = useMemo(() => {
+    return calculatedTotal + taxes + DELIVERY_CHARGES;
+  }, [calculatedTotal, taxes]);
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["coupon"],
@@ -109,7 +112,14 @@ function OrderSummary() {
         <hr />
         <div className="flex items-center justify-between">
           <span className="font-bold">Order total</span>
-          <span className="font-bold">₹{grandTotal}</span>
+          <span className="font-bold">
+            <span className={discountPercentage > 0 ? "line-through" : ""}>
+              ₹{grandTotalWithoutDiscount}
+            </span>
+            {discountPercentage > 0 && (
+              <span className="text-red-500 ml-2">₹{grandTotalWithDiscount}</span>
+            )}
+          </span>
         </div>
         {couponError && <span className="text-red-500">{couponError}</span>}
         <div className="flex items-center gap-4">
@@ -122,7 +132,12 @@ function OrderSummary() {
             ref={couponCodeRef}
             aria-invalid={Boolean(couponError)}
           />
-          <Button onClick={handleCouponValidation} type="button" variant={"outline"} disabled={isPending}>
+          <Button
+            onClick={handleCouponValidation}
+            type="button"
+            variant={"outline"}
+            disabled={isPending}
+          >
             {isPending ? "Checking..." : "Apply"}
           </Button>
         </div>
